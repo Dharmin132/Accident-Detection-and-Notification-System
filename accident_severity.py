@@ -10,6 +10,14 @@ def collision_severity(G, fs, A1, A2, B1, B2, len1, len2, d, a):
     xcfc18 = [0.0]*len2
     vel = [0.0]*len2
 
+    end1 = 0 
+    end2 = 0
+    i = 0
+    j = 0
+    
+    dvx = 0.0
+    dvy = 0.0
+
     temp1[0] = B2[0]*G[0]
     temp1[1] = B2[0]*G[1] + B2[1]*G[0] - A2[1]*temp1[0]
 
@@ -50,7 +58,7 @@ def collision_severity(G, fs, A1, A2, B1, B2, len1, len2, d, a):
     j = 0
 
     for i in range(1, len2):
-        if(abs(xcfc18[i]) > abs(xcfc18[j])):
+        if (abs(xcfc18[i]) > abs(xcfc18[j])):
             j = i
 
     if(a == 'x'):
@@ -60,8 +68,17 @@ def collision_severity(G, fs, A1, A2, B1, B2, len1, len2, d, a):
         py = xcfc18[j]
         chk2 = abs(0.05*py)
 
+    for i in range(j, -1, -1):
+        if (abs(xcfc18[i]) <= 1.5):
+            end1 = i
+            break
 
+    for i in range(j, len2):
+        if (abs(xcfc18[i]) <= chk2):
+            end2 = i
+            break
 
-
-
-    pass
+    if(a == 'x'):
+        dvx = vel[end2] - vel[end1]
+    else:
+        dvy = vel[end2] - vel[end1]
