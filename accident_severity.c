@@ -3,20 +3,20 @@
 #include <math.h>
 #include <stdlib.h>
 
-void collision_severity(float G[], float fs, float A1[3], float A2[3], float B1[3], float B2[3], int len, int len2, int d, char a);
+void collision_severity(float G[], float fs, float A1[3], float A2[3], float B1[3], float B2[3], int len1, int len2, int d, char a);
 
 float px = 0, dvx = 0, py = 0, dvy = 0, p = 0, dv = 0;
 
 void main()
 {
     float A1[3], B1[3], A2[3], B2[3], wa, fs; //  filter co-efficients and sampling freq
-    int len = 0, len2, d;       
+    int len1 = 0, len2, d;       
     // length of signals and decimation factor
     printf("Sampling Frequency(kHz): ");
     scanf("%f", &fs);
 
     printf("Sequence Length: ");
-    scanf("%d", &len);
+    scanf("%d", &len1);
     // building 30Hz Low Pass filter
     wa = 0.1178 / fs;
     wa = wa + (pow(wa, 3) / 3);
@@ -29,21 +29,21 @@ void main()
     B2[2] = B2[0];
 
     d = floor(fs);
-    len2 = floor((len + d - 1) / d);
+    len2 = floor((len1 + d - 1) / d);
     // // fetching acceleration data from csv file
     int i, tmp = 0, c = 0, sevx = 1, sevy = 1, sev = 1, L2, L3;
-    float x[len], y[len], z[len], x2, y2;
+    float x[len1], y[len1], z[len1], x2, y2;
     FILE *acdata;
     acdata = fopen("recdata.csv", "r");
 
-    for (i = 0; i < len; i++)
+    for (i = 0; i < len1; i++)
     {
         fscanf(acdata, "%f,%f,%f", &x[i], &y[i], &z[i]);
     }
 
     fclose(acdata);
     // code starts
-    for (i = 0; i < len; i++)
+    for (i = 0; i < len1; i++)
     {
         x2 = x[i] * x[i];
         y2 = y[i] * y[i];
@@ -79,8 +79,8 @@ void main()
 
     else
     {
-        collision_severity(x, fs, A1, A2, B1, B2, len, len2, d, 'x');
-        collision_severity(y, fs, A1, A2, B1, B2, len, len2, d, 'y');
+        collision_severity(x, fs, A1, A2, B1, B2, len1, len2, d, 'x');
+        collision_severity(y, fs, A1, A2, B1, B2, len1, len2, d, 'y');
         p = sqrt(pow(px, 2) + pow(py, 2));
         dv = sqrt(pow(dvx, 2) + pow(dvy, 2));
 
@@ -181,33 +181,35 @@ void main()
 
 // defining funtion to estimate collision severity
 
-void collision_severity(float G[], float fs, float A1[3], float A2[3], float B1[3], float B2[3], int len, int len2, int d, char a)
+void collision_severity(float G[], float fs, float A1[3], float A2[3], float B1[3], float B2[3], int len1, int len2, int d, char a)
 {
     int i, j, end1, end2;
-    float x18[len], xcfc18[len2], vel[len2], tmp1[len], tmp2[len], tmp3[len], chk2;
+    float x18[len1], xcfc18[len2], vel[len2], temp1[len1], temp2[len1], temp3[len1], chk2;
 
     // for cfc18 30 Hz 2-pole Butterworth Filter with Zero Phase
 
-    tmp1[0] = B2[0] * G[0];
-    tmp1[1] = B2[0] * G[1] + B2[1] * G[0] - A2[1] * tmp1[0];
-    for (i = 2; i < len; i++)
+    temp1[0] = B2[0] * G[0];
+    temp1[1] = B2[0] * G[1] + B2[1] * G[0] - A2[1] * temp1[0];
+    for (i = 2; i < len1; i++)
     {
-        tmp1[i] = B2[0] * G[i] + B2[1] * G[i - 1] + B2[2] * G[i - 2] - A2[1] * tmp1[i - 1] - A2[2] * tmp1[i - 2];
+        temp1[i] = B2[0] * G[i] + B2[1] * G[i - 1] + B2[2] * G[i - 2] - A2[1] * temp1[i - 1] - A2[2] * temp1[i - 2];
     }
-    for (i = len - 1, j = 0; j < len; j++)
+
+    for (i = len1 - 1, j = 0; j < len1; j++)
     {
-        tmp2[j] = tmp1[i];
+        temp2[j] = temp1[i];
         i = i - 1;
     }
-    tmp3[0] = B2[0] * tmp2[0];
-    tmp3[1] = B2[0] * tmp2[1] + B2[1] * tmp2[0] - A2[1] * tmp3[0];
-    for (i = 2; i < len; i++)
+
+    temp3[0] = B2[0] * temp2[0];
+    temp3[1] = B2[0] * temp2[1] + B2[1] * temp2[0] - A2[1] * temp3[0];
+    for (i = 2; i < len1; i++)
     {
-        tmp3[i] = B2[0] * tmp2[i] + B2[1] * tmp2[i - 1] + B2[2] * tmp2[i - 2] - A2[1] * tmp3[i - 1] - A2[2] * tmp3[i - 2];
+        temp3[i] = B2[0] * temp2[i] + B2[1] * temp2[i - 1] + B2[2] * temp2[i - 2] - A2[1] * temp3[i - 1] - A2[2] * temp3[i - 2];
     }
-    for (i = len - 1, j = 0; j < len; j++)
+    for (i = len1 - 1, j = 0; j < len1; j++)
     {
-        x18[j] = tmp3[i];
+        x18[j] = temp3[i];
         i = i - 1;
     }
 
