@@ -255,6 +255,7 @@ void collision_severity(float G[], float fs, float A1[3], float A2[3], float B1[
             break;
         }
     }
+    
     for (i = end1 - 1; i >= 0; i--)
     {
         if (abs(xcfc18[i]) <= 1)

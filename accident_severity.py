@@ -1,5 +1,13 @@
 import numpy as np
 import pandas as pd
+import math as m
+
+dvx = 0.0
+dvy = 0.0
+px = 0.0
+py = 0.0
+p = 0.0
+dv = 0.0
 
 def collision_severity(G, fs, A1, A2, B1, B2, len1, len2, d, a):
 
@@ -12,11 +20,6 @@ def collision_severity(G, fs, A1, A2, B1, B2, len1, len2, d, a):
 
     end1 = 0 
     end2 = 0
-    i = 0
-    j = 0
-    
-    dvx = 0.0
-    dvy = 0.0
 
     temp1[0] = B2[0]*G[0]
     temp1[1] = B2[0]*G[1] + B2[1]*G[0] - A2[1]*temp1[0]
@@ -82,3 +85,38 @@ def collision_severity(G, fs, A1, A2, B1, B2, len1, len2, d, a):
         dvx = vel[end2] - vel[end1]
     else:
         dvy = vel[end2] - vel[end1]
+
+def main():
+
+    A1 = [0.0]*3
+    A2 = [0.0]*3
+    B1 = [0.0]*3
+    B2 = [0.0]*3
+
+    fs = float(input("Sampling Frequency (kHz) : "))
+    len1 = int(input("Sequence Length : "))
+
+    wa = 0.1178/fs
+    wa += (wa**3)/3
+
+    A2[0] = 1
+    A2[1] = (2*(wa**2) - 2)/(1 + 1.4142*wa + wa**2)
+    A2[2] = (1 - 1.4142*wa + wa**2)/(1 + 1.4142*wa + wa**2)
+
+    B2[0] = (wa**2)/(1 + 1.4142*wa + wa**2)
+    B2[1] = 2*B2[0]
+    B2[2] = B2[0]
+
+    d = m.floor(fs)
+    len2 = m.floor((len1 + d - 1) / d)
+
+    x = [0.0]*len1
+    y = [0.0]*len1
+    z = [0.0]*len1
+
+    sevx = 1
+    sevy = 1
+    sevz = 1
+
+    
+
