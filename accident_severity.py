@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 import math as m
 
@@ -253,3 +252,7 @@ def main():
                 print("SIDE(LEFT): -- \n")
 
             print("SIDE(RIGHT): -- \n")
+
+
+if __name__ == '__main__':
+    main()
