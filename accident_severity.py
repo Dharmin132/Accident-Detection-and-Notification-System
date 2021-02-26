@@ -121,6 +121,11 @@ def main():
     c = 0
 
     # reading csv file
+    path = 'E:/B.Tech Project/NHSTA_ACCELERATION_DATA/side.csv'
+    data_csv = pd.read_csv(path)
+    x = data_csv['t']
+    y = data_csv['x']
+    z = data_csv['y']
 
     for i in range(0, len1):
 
