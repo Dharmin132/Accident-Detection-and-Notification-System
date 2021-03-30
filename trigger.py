@@ -1,5 +1,5 @@
 from time import sleep
-import RPi.GPIO as GPIO 
+import RPi.GPIO as GPIO
 from mpu6050 import mpu6050
 #import pandas as pd
 import math as m
@@ -7,7 +7,7 @@ import math as m
 mpu = mpu6050(0x68)
 
 GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD) 
+GPIO.setmode(GPIO.BOARD)
 GPIO.setup(37, GPIO.OUT, initial=GPIO.LOW)
 
 while True:
@@ -22,15 +22,15 @@ while True:
     inMotion = True
     #isTwoWheeler = False
 
-    if acc_x==0 and acc_y==0:
+    if acc_x == 0 and acc_y == 0:
         inMotion = False
 
     elif abs(acc_x) > 1.5:
-        
-        for i in range(0,10):
+
+        for i in range(0, 10):
             GPIO.output(37, GPIO.HIGH)
             sleep(0.1)
-            GPIO.output(37, GPIO.LOW)  
+            GPIO.output(37, GPIO.LOW)
             sleep(0.1)
 
         print("Accident Detected!")
